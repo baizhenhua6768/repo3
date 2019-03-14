@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<sqlMap namespace="export_file" jdbcTimeout="5">
-
-</sqlMap>

@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="sntk-service-web:war">
-    <output-path>$PROJECT_DIR$/../sntk-service-web/target</output-path>
-    <root id="archive" name="sntk-service-web.war">
-      <element id="artifact" artifact-name="sntk-service-web:war exploded" />
-    </root>
-  </artifact>
-</component>
