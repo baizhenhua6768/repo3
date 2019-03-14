@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.suning.store.commons:store-commons-rsf:1.0.3-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/store/commons/store-commons-rsf/1.0.3-SNAPSHOT/store-commons-rsf-1.0.3-20180629.033814-33.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/store/commons/store-commons-rsf/1.0.3-SNAPSHOT/store-commons-rsf-1.0.3-20180629.033814-33-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/store/commons/store-commons-rsf/1.0.3-SNAPSHOT/store-commons-rsf-1.0.3-20180629.033814-33-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

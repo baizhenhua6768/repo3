@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="bookingSendMsg" jdbcTimeout="5">
+
+    <sql id="queryBookingByStatus">
+        <![CDATA[
+            select
+               id,
+               booking_code as bookingCode,
+               appointment_time as appointmentTime,
+               cust_phone as custPhone,
+               guide_phone as guidePhone,
+               type
+             from
+                o2o_v_booking_send_message
+             where
+                status = '1'
+        ]]>
+    </sql>
+
+</sqlMap>

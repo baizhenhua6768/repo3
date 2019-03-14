@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 配置应用资源的访问策略 -->
+<access-policy>
+	<default-access-policy>PASS_THOUGH</default-access-policy>
+	<!-- passThough不会被passport处理，直接放行，但不能感知用户是否已经登录-->
+	<pass-though>
+		<url-pattern>/**/*.css</url-pattern> 
+        <url-pattern>/**/*.js</url-pattern>
+        <url-pattern>/**/*.jpg</url-pattern>
+		<url-pattern>/**/*.png</url-pattern>
+        <url-pattern>/public</url-pattern>
+        <url-pattern>/monitor/sysinfo.do</url-pattern>
+	</pass-though>
+	<!-- restrict为受限资源，访问该资源必须要登录 -->
+	<restricted-access>
+		<url-pattern>/**/*.do</url-pattern>
+        <url-pattern>/**/*.htm</url-pattern>
+        <url-pattern>/**/*.html</url-pattern>
+	</restricted-access>
+	<!-- gateway不需要用户提供凭证的访问策略，但能感知用户是否已经登录 -->
+	<gateway>
+	</gateway>
+</access-policy>

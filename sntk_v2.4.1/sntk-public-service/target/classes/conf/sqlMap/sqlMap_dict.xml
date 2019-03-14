@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="dict" jdbcTimeout="5">
+
+
+	<!-- 分页查询所有的字典表数据 -->
+	<sql id="queryPageDictList">
+		<![CDATA[
+        	select id as dictId,type as dictType,code as dictCode,value as dictValue ,description
+			from dicts where delete_flag = 0
+			limit :offset, :size
+    	]]>
+	</sql>
+
+
+	<!-- 数据字典表 -->
+	<sql id="queryPageDictList#count">
+		<![CDATA[
+        	SELECT count(1) FROM dicts  WHERE delete_flag = 0
+    	]]>
+	</sql>
+
+
+	<!-- 字典表的该条记录是否存在-->
+	<sql id="isExitsDict">
+		<![CDATA[
+        	SELECT count(1) num
+			FROM dicts
+			 WHERE  type = :type and code = :code and delete_flag = 0
+    	]]>
+	</sql>
+
+	<!-- 根据type与code查出对应的对象 -->
+	<sql id="findDictByTypeAndCode">
+		<![CDATA[
+        	select id as dictId,type as dictType,code as dictCode,value as dictValue
+			from dicts where type = :type and code = :code and delete_flag = 0
+			limit 0,1
+    	]]>
+	</sql>
+	
+	
+	
+
+
+</sqlMap>

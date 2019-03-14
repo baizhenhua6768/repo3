@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="sntk-admin" />
+        <module name="sntk-admin-service" />
+        <module name="sntk-model" />
+        <module name="sntk-public-service" />
+        <module name="sntk-rsf" />
+        <module name="sntk-rsf-impl" />
+        <module name="sntk-service-web" />
+        <module name="sntk-support" />
+        <module name="sntk-web" />
+        <module name="sntk-web-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="sntk-admin" target="1.7" />
+      <module name="sntk-admin-service" target="1.7" />
+      <module name="sntk-model" target="1.7" />
+      <module name="sntk-pom" target="1.7" />
+      <module name="sntk-public-service" target="1.7" />
+      <module name="sntk-rsf" target="1.7" />
+      <module name="sntk-rsf-impl" target="1.7" />
+      <module name="sntk-service-web" target="1.7" />
+      <module name="sntk-support" target="1.7" />
+      <module name="sntk-web" target="1.7" />
+      <module name="sntk-web-service" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

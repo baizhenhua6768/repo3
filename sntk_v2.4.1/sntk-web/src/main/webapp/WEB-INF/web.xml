@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="sample" version="3.0">
+    <display-name>Archetype Created Web Application</display-name>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:conf/spring/spring-context.xml
+        </param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.suning.framework.log.LogContextListener</listener-class>
+    </listener>
+    <listener>
+	    <listener-class>com.suning.rsf.consumer.ConsumerContextListener</listener-class>
+	</listener>
+
+    <filter>
+        <filter-name>characterEncoding</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncoding</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <!-- passport配置start -->
+	<context-param>
+		<param-name>idsConfigFilePath</param-name>
+		<param-value>/WEB-INF/classes/conf/ids/ids-config.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>idsAccessPolicyFilePath</param-name>
+		<param-value>/WEB-INF/classes/conf/ids/ids-accessPolicy.xml</param-value>
+	</context-param>
+	<filter>
+		<filter-name>authenticationFilter</filter-name>
+		<filter-class>com.suning.ids.client.AuthenticationFilter</filter-class>
+		<init-param>
+			<param-name>authUrlPattern</param-name>
+			<param-value>/auth</param-value>
+		</init-param>
+		<init-param>
+			<param-name>authStatusUrlPattern</param-name>
+			<param-value>/authStatus</param-value>
+		</init-param>
+		<init-param>
+			<param-name>popupLoginSuccessUrlPattern</param-name>
+			<param-value>/popupLoginSuccess</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>authenticationFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+        <filter-name>decryptorFilter</filter-name>
+        <filter-class>com.suning.store.commons.web.filter.DecryptFilter</filter-class>
+        <init-param>
+            <param-name>decryptorClass</param-name>
+            <param-value>com.suning.store.commons.web.filter.Base64Decryptor</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>decryptorFilter</filter-name>
+        <url-pattern>/decryptor/*</url-pattern>
+    </filter-mapping>
+	
+	<servlet>
+		<servlet-name>authenticationServlet</servlet-name>
+		<servlet-class>com.suning.ids.client.AuthenticationServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>authenticationServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>authStatusServlet</servlet-name>
+		<servlet-class>com.suning.ids.client.AuthStatusServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>authStatusServlet</servlet-name>
+		<url-pattern>/authStatus</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>popupLoginSuccessServlet</servlet-name>
+		<servlet-class>com.suning.ids.client.PopupLoginSuccessServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>popupLoginSuccessServlet</servlet-name>
+		<url-pattern>/popupLoginSuccess</url-pattern>
+	</servlet-mapping>
+
+    <!-- webtraffic rejectHandler class -->
+    <context-param>
+        <param-name>webTrafficRejectHandlerClass</param-name>
+        <param-value>com.suning.sntk.web.filter.SntkWebTrafficRejectHandler</param-value>
+    </context-param>
+
+    <!-- 流控filter -->
+    <filter>
+        <filter-name>webTrafficFilter</filter-name>
+        <filter-class>com.suning.framework.webtraffic.WebTrafficFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>webTrafficFilter</filter-name>
+        <url-pattern>*.htm</url-pattern>
+    </filter-mapping>
+
+	<!-- 响应头参数filter -->
+	<filter>
+		<filter-name>ResponseHeaderFilter</filter-name>
+		<filter-class>com.suning.sntk.web.filter.ResponseHeaderFilter</filter-class>
+		<init-param>
+			<param-name>Content-Type</param-name>
+			<param-value>application/json;charset=utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ResponseHeaderFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+        <servlet-name>sntk-web</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:conf/spring/spring-servlet.xml</param-value>
+        </init-param>
+		<load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>sntk-web</servlet-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.htm</url-pattern>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>*</welcome-file>
+    </welcome-file-list>
+    <session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+</web-app>

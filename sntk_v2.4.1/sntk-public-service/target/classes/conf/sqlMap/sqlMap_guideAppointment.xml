@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="guide">
+
+    <sql id="isExistCustBooking">
+        <![CDATA[
+            select
+                count(1)
+            FROM
+                o2o_v_guide_appointment
+            WHERE
+            (date_format(BOOKING_TIME,'%Y-%m-%d') = :bookTime  or  date_format(CREATE_TIME,'%Y-%m-%d')  = :today)
+            and CUST=:cust and COMPLETE!=5 and BOOKING_STATUS='0';
+        ]]>
+    </sql>
+
+    <sql id="isExistBookCode">
+        <![CDATA[
+            select
+                count(1)
+            FROM
+                o2o_v_guide_appointment
+            WHERE
+            BOOKCODE = :bookCode
+        ]]>
+    </sql>
+
+    <sql id="addBookGuide">
+        <![CDATA[
+	         INSERT INTO o2o_v_guide_appointment (
+	             BOOKCODE,
+	             CUST,
+	             GUIDE_ID,
+	             TELEPHONE,
+	             BOOKING_TIME,
+	             BOOKING_STATUS,
+	             COMPLETE,
+	             JUDGE_FLAG,
+                 CREATE_TIME,
+                 STORE_CODE,
+                 business_code,
+	             v_type,
+	             visit
+	         )
+	         VALUES
+	             (
+	                 :bookingDto.bookCode,
+	                 :bookingDto.cust,
+	                 :bookingDto.guideId,
+	                 :bookingDto.telephone,
+	                 :bookingDto.bookingTime,
+	                 :bookingDto.bookingStatus,
+	                 :bookingDto.complete,
+	                 :bookingDto.judgeFlag,
+                     NOW(),
+                     :bookingDto.storeCode,
+                     :bookingDto.businessCode,
+                     :bookingDto.vtype,
+                     :bookingDto.visit
+	             )
+         ]]>
+    </sql>
+
+    <sql id="getGuideInfo">
+        <![CDATA[
+            SELECT
+                IFNULL(g.GUIDE_ID, '') AS guideId,
+                IFNULL(g.GUIDE_NAME, '') AS guideName,
+                IFNULL(g.GUIDE_PHOTO, '') AS guidePhoto,
+                IFNULL(g.STAR_LEVEL, '') AS starLevel,
+                IFNULL(g.INTRODUCTION, '') AS introduction,
+                IFNULL(g.CATEGORY_NAME, '') AS categoryName,
+                IFNULL(g.TELE, '') AS tele,
+                IFNULL(g.ORDER_NUM, '') AS orderNum,
+                IFNULL(g.STORE_CODE, '') AS storeCode,
+                IFNULL(g.CERTIFICATE, '') AS certificate,
+                g.sale_age saleAge,
+                g.OPEN_FLAG AS guideOpenFlag,
+                s.NAME storeName,
+				s.CITY_ID cityCode,
+				s.V_FLAG AS storeOpenFlag,
+				s.ADDRESS AS address,
+				if(s.type='服务站','2',s.type) AS stationType,
+				s.CITY_NAME cityName
+            FROM
+                o2o_v_guide_info g
+            LEFT JOIN o2o_store_detail s
+            ON g.STORE_CODE=s.STORE_CODE
+            WHERE
+                g.GUIDE_ID = :guideId
+        ]]>
+    </sql>
+
+    <sql id="queryBookList">
+        <![CDATA[
+             SELECT
+                 a.CREATE_TIME AS createTime,
+                 g.GUIDE_ID AS guideId,
+				 g.GUIDE_NAME AS guideName,
+				 g.STAR_LEVEL AS starLevel,
+				 g.ORDER_NUM AS oderNum,
+				 g.TELE AS telephone,
+				 a.CUST AS cust,
+				 g.CATEGORY_NAME AS categoryName,
+				 g.GUIDE_PHOTO AS guidePhoto,
+				 s.`NAME` AS storeName,
+				 a.JUDGE_FLAG AS judgeFlag,
+				 a.business_code AS businessCode,
+				 a.COMPLETE AS complete,
+				 a.BOOKCODE AS bookCode,
+				 a.TELEPHONE AS custTele,
+				 a.VISIT AS visit,
+				 a.BOOKING_STATUS AS bookingStatus,
+				 s.ADDRESS AS address,
+				 s.STORE_CODE AS storeCode,
+				 if(s.type='服务站','2',s.type) AS storeType,
+				 IFNULL(DATE_FORMAT(a.BOOKING_TIME,'%Y-%m-%d'), '') AS bookingTime,
+				 g.OPEN_FLAG AS guideOpenFlag,
+				 s.V_FLAG AS storeOpenFlag,
+				 a.dimission_flag AS dimissionFlag
+            FROM
+                o2o_v_guide_info g,
+                o2o_v_guide_appointment a,
+                o2o_store_detail s
+            WHERE
+                a.CUST = :custNo
+            AND g.GUIDE_ID = a.GUIDE_ID
+            AND g.STORE_CODE = s.STORE_CODE
+            ORDER BY
+                a.CREATE_TIME DESC
+            LIMIT 0 ,:size
+        ]]>
+    </sql>
+
+    <sql id="getAppointmentByBookCode">
+        <![CDATA[
+        SELECT
+                 g.GUIDE_ID AS guideId,
+				 g.GUIDE_NAME AS guideName,
+				 g.STAR_LEVEL AS starLevel,
+				 g.ORDER_NUM AS oderNum,
+				 g.TELE AS telephone,
+				 a.CUST AS cust,
+				 g.CATEGORY_NAME AS categoryName,
+				 g.GUIDE_PHOTO AS guidePhoto,
+				 s.`NAME` AS storeName,
+				 a.JUDGE_FLAG AS judgeFlag,
+				 a.business_code AS businessCode,
+				 a.COMPLETE AS complete,
+				 a.BOOKCODE AS bookCode,
+				 a.TELEPHONE AS custTele,
+				 a.VISIT AS visit,
+				 a.BOOKING_STATUS AS bookingStatus,
+				 a.CREATE_TIME as createTime,
+				 s.ADDRESS AS address,
+				 s.STORE_CODE AS storeCode,
+				 IFNULL(DATE_FORMAT(a.BOOKING_TIME,'%Y-%m-%d'), '') AS bookingTime,
+				 g.OPEN_FLAG AS guideOpenFlag,
+				 if(s.type='服务站','2',s.type) AS storeType,
+				 s.V_FLAG AS storeOpenFlag,
+				 a.CREATE_TIME createTime,
+				 a.dimission_flag AS dimissionFlag
+            FROM
+                o2o_v_guide_info g,
+                o2o_v_guide_appointment a,
+                o2o_store_detail s
+            WHERE
+                a.BOOKCODE = :bookCode
+            AND g.GUIDE_ID = a.GUIDE_ID
+            AND g.STORE_CODE = s.STORE_CODE
+        ]]>
+    </sql>
+
+    <sql id="getBookingInfoByBookCode">
+        <![CDATA[
+		   SELECT
+                 a.CREATE_TIME AS createTime,
+                 g.GUIDE_ID AS guideId,
+				 g.GUIDE_NAME AS guideName,
+				 g.STAR_LEVEL AS starLevel,
+				 g.ORDER_NUM AS oderNum,
+				 g.TELE AS telephone,
+				 a.CUST AS cust,
+				 g.CATEGORY_NAME AS categoryName,
+				 g.GUIDE_PHOTO AS guidePhoto,
+				 s.`NAME` AS storeName,
+				 a.JUDGE_FLAG AS judgeFlag,
+				 a.business_code AS businessCode,
+				 a.COMPLETE AS complete,
+				 a.BOOKCODE AS bookCode,
+				 a.TELEPHONE AS custTele,
+				 a.VISIT AS visit,
+				 a.BOOKING_STATUS AS bookingStatus,
+				 s.ADDRESS AS address,
+				 s.STORE_CODE AS storeCode,
+				 if(s.type='服务站','2',s.type) AS storeType,
+				 IFNULL(DATE_FORMAT(a.BOOKING_TIME,'%Y-%m-%d'), '') AS bookingTime,
+				 g.OPEN_FLAG AS guideOpenFlag,
+				 s.V_FLAG AS storeOpenFlag,
+				 a.dimission_flag AS dimissionFlag
+            FROM
+                o2o_v_guide_info g,
+                o2o_v_guide_appointment a,
+                o2o_store_detail s
+            WHERE
+                a.BOOKCODE=:bookCode
+            AND g.GUIDE_ID = a.GUIDE_ID
+            AND g.STORE_CODE = s.STORE_CODE
+        ]]>
+    </sql>
+
+
+    <sql id="cancelBook">
+        <![CDATA[
+            UPDATE o2o_v_guide_appointment
+            SET
+             COMPLETE = :infoDto.complete,
+             BOOKING_STATUS = :infoDto.bookingStatus,
+             JUDGE_FLAG = '0'
+            WHERE
+                BOOKCODE = :infoDto.bookCode
+        ]]>
+    </sql>
+
+    <sql id="queryAppointmentList">
+        <![CDATA[
+            SELECT
+                ID as bookId,
+                bookCode,
+                CREATE_TIME,
+                telephone,
+                BOOKING_STATUS as bookingStatus,
+                DATE_FORMAT(BOOKING_TIME,'%Y-%m-%d') AS bookingTime,
+                visit,
+                remark,
+                cust,
+			    DATE_FORMAT(RECEIVE_TIME,'%Y-%m-%d') AS receiveTime,
+			    reason,
+			    complete,
+			    is_send_sms,
+			    v_type as vtype
+			FROM o2o_v_guide_appointment
+			WHERE GUIDE_ID=:reqDto.guideId
+			<#if reqDto.bookingStatus?exists && reqDto.bookingStatus!="">
+			    and BOOKING_STATUS = :reqDto.bookingStatus
+			</#if>
+			<#if reqDto.complete?exists && reqDto.complete!="">
+			    and COMPLETE = :reqDto.complete
+			</#if>
+			<#if reqDto.visit?exists && reqDto.visit =="0" >
+			    and (VISIT = :reqDto.visit or VISIT is null )
+			</#if>
+			<#if reqDto.visit?exists && reqDto.visit!="" && reqDto.visit!="0">
+			    and VISIT = :reqDto.visit
+			</#if>
+			<#if reqDto.visitList?exists>
+			    and VISIT in (:reqDto.visitList)
+			</#if>
+			<#if reqDto.telephone?exists && reqDto.telephone!="">
+			    and telephone = :reqDto.telephone
+			</#if>
+			<#if reqDto.startTime?exists && reqDto.startTime!="" >
+			    and CREATE_TIME > :reqDto.startTime
+			</#if>
+			<#if reqDto.endTime?exists && reqDto.endTime!="" >
+			    and CREATE_TIME < :reqDto.endTime
+			</#if>
+			ORDER BY bookingTime DESC,CREATE_TIME DESC
+			LIMIT :offset , :size
+        ]]>
+    </sql>
+
+    <sql id="queryAppointmentList#count">
+        <![CDATA[
+            SELECT
+               count(1)
+			FROM o2o_v_guide_appointment
+			WHERE GUIDE_ID=:reqDto.guideId
+			<#if reqDto.bookingStatus?exists && reqDto.bookingStatus!="">
+			    and BOOKING_STATUS = :reqDto.bookingStatus
+			</#if>
+			<#if reqDto.complete?exists && reqDto.complete!="">
+			    and COMPLETE = :reqDto.complete
+			</#if>
+			<#if reqDto.visit?exists && reqDto.visit =="0" >
+			    and (VISIT = :reqDto.visit or VISIT is null )
+			</#if>
+			<#if reqDto.visit?exists && reqDto.visit!="" && reqDto.visit!="0">
+			    and VISIT = :reqDto.visit
+			</#if>
+			<#if reqDto.visitList?exists>
+			    and VISIT in (:reqDto.visitList)
+			</#if>
+			<#if reqDto.telephone?exists && reqDto.telephone!="">
+			    and telephone = :reqDto.telephone
+			</#if>
+			<#if reqDto.startTime?exists && reqDto.startTime!="" >
+			    and CREATE_TIME > :reqDto.startTime
+			</#if>
+			<#if reqDto.endTime?exists && reqDto.endTime!="" >
+			    and CREATE_TIME < :reqDto.endTime
+			</#if>
+        ]]>
+    </sql>
+
+    <sql id="queryAppointmentList#count">
+        <![CDATA[
+            SELECT
+               count(1)
+			FROM o2o_v_guide_appointment
+			WHERE GUIDE_ID=:guideId
+			<#if reqDto.bookingStatus?exists && reqDto.bookingStatus!="">
+			    and BOOKING_STATUS = :reqDto.bookingStatus
+			</#if>
+			<#if reqDto.complete?exists && reqDto.complete!="">
+			    and COMPLETE = :reqDto.complete
+			</#if>
+			<#if reqDto.visit?exists && reqDto.visit!="">
+			    and VISIT = :reqDto.visit
+			</#if>
+			<#if reqDto.visitList?exists>
+			    and VISIT in (:reqDto.visitList)
+			</#if>
+			<#if reqDto.beginTime?exists && reqDto.beginTime!="" >
+			    and CREATE_TIME > :reqDto.beginTime
+			</#if>
+			<#if reqDto.endTime?exists && reqDto.endTime!="" >
+			    and CREATE_TIME < :reqDto.endTime
+			</#if>
+        ]]>
+    </sql>
+
+    <sql id="updateRemark">
+        <![CDATA[
+            UPDATE o2o_v_guide_appointment
+            SET
+               remark = :remark
+            WHERE
+               ID = :id
+        ]]>
+    </sql>
+
+    <!--查询会员是否预约过-->
+    <sql id="queryCustOrder">
+        <![CDATA[
+            select
+                count(1)
+            FROM
+                o2o_v_guide_appointment v
+            WHERE
+            v.CUST=:cust and v.business_code='0' and v.COMPLETE!=5;
+        ]]>
+    </sql>
+
+    <sql id="updateSendSms">
+        <![CDATA[
+            UPDATE o2o_v_guide_appointment
+            SET
+               is_send_sms = '1'
+            WHERE
+               BOOKCODE = :bookCode
+        ]]>
+    </sql>
+
+    <!--查询某个时间之前创建的预约单-->
+    <sql id="queryAppointmentByCreatTime">
+        <![CDATA[
+            select
+            id
+            from
+            o2o_v_guide_appointment
+            WHERE
+                BOOKING_STATUS = '0'
+            and CREATE_TIME < :createTime
+        ]]>
+    </sql>
+
+    <!--更新预约列表置灰（为离职状态）-->
+    <sql id="updateDimissionFlag">
+        <![CDATA[
+            UPDATE
+                o2o_v_guide_appointment
+            SET
+               DIMISSION_FLAG = '1'
+            WHERE
+                GUIDE_ID in (:staffList)
+        ]]>
+    </sql>
+
+
+    <sql id="findBookingByBookCode">
+        <![CDATA[
+             SELECT
+                 a.CREATE_TIME AS createTime,
+                 g.GUIDE_ID AS guideId,
+				 g.GUIDE_NAME AS guideName,
+				 g.STAR_LEVEL AS starLevel,
+				 g.ORDER_NUM AS oderNum,
+				 g.TELE AS telephone,
+				 a.CUST AS cust,
+				 g.CATEGORY_NAME AS categoryName,
+				 g.GUIDE_PHOTO AS guidePhoto,
+				 IFNULL(s.NAME,'') AS storeName,
+				 a.JUDGE_FLAG AS judgeFlag,
+				 a.business_code AS businessCode,
+				 a.COMPLETE AS complete,
+				 a.BOOKCODE AS bookCode,
+				 a.TELEPHONE AS custTele,
+				 a.VISIT AS visit,
+				 a.BOOKING_STATUS AS bookingStatus,
+				 s.ADDRESS AS address,
+				 s.STORE_CODE AS storeCode,
+				 if(s.type='服务站','2',s.type) AS storeType,
+				 IFNULL(DATE_FORMAT(a.BOOKING_TIME,'%Y-%m-%d'), '') AS bookingTime,
+				 g.OPEN_FLAG AS guideOpenFlag,
+				 s.V_FLAG AS storeOpenFlag,
+				 a.dimission_flag AS dimissionFlag
+            FROM
+                o2o_v_guide_info g,
+                o2o_v_guide_appointment a,
+                o2o_store_detail s
+            WHERE
+                a.BOOKCODE = :bookCode
+            AND g.GUIDE_ID = a.GUIDE_ID
+            AND g.STORE_CODE = s.STORE_CODE
+        ]]>
+    </sql>
+
+
+    <sql id="queryNearAppointment">
+        <![CDATA[
+             SELECT
+                GUIDE_ID AS guideId,
+                BOOKING_TIME as bookTime,
+                BOOKCODE as bookCode
+            FROM
+                o2o_v_guide_appointment
+            WHERE
+                CUST = :custNo
+                and BOOKING_STATUS = '0'
+                and (date_format(NOW(),'%Y-%m-%d')) <= BOOKING_TIME
+            order by
+                BOOKING_TIME asc
+        ]]>
+    </sql>
+
+    <sql id="queryBookGuide">
+        <![CDATA[
+             SELECT
+                 g.GUIDE_ID AS guideId,
+				 g.GUIDE_NAME AS guideName,
+				 g.STAR_LEVEL AS starLevel,
+				 g.ORDER_NUM AS oderNum,
+				 g.TELE AS telephone,
+				 g.CATEGORY_NAME AS categoryName,
+				 g.GUIDE_PHOTO AS guidePhoto,
+				 s.`NAME` AS storeName,
+				 s.ADDRESS AS address,
+				 s.STORE_CODE AS storeCode,
+				 if(s.type='服务站','2',s.type) AS storeType,
+				 g.OPEN_FLAG AS guideOpenFlag,
+				 s.V_FLAG AS storeOpenFlag
+            FROM
+                o2o_v_guide_info g,
+                o2o_store_detail s
+            WHERE
+            g.GUIDE_ID = :guideId
+            AND g.STORE_CODE = s.STORE_CODE
+        ]]>
+    </sql>
+
+    <sql id="queryCustNo">
+        <![CDATA[
+            SELECT DISTINCT
+               CUST
+            FROM
+                o2o_v_guide_appointment
+            WHERE
+                GUIDE_ID =:staffId
+        ]]>
+    </sql>
+
+    <!--会员当天是否存在未完成预约单-->
+    <sql id="existNoCompleteBookingOrder">
+        <![CDATA[
+            select
+                count(1)
+            FROM
+                o2o_v_guide_appointment
+            WHERE
+            date_format(CREATE_TIME,'%Y-%m-%d')  = :today
+            and CUST=:customerNo and COMPLETE!=5 and BOOKING_STATUS='0';
+        ]]>
+    </sql>
+</sqlMap>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="label">
+    
+    <sql id="queryLabelsByStar">
+        <![CDATA[
+			select label_code,label_name,DATE_FORMAT(create_time,"%Y-%m-%d %T") as create_time,star_level from o2o_labels where star_level=:starLevel
+ 		]]>
+    </sql>
+    
+    <sql id="countByCode">
+        <![CDATA[
+ 			SELECT count(1) FROM o2o_labels 
+ 			WHERE label_code = :labelCode
+ 		]]>
+    </sql>
+    
+    <sql id="countByName">
+        <![CDATA[
+ 			SELECT count(1) FROM o2o_labels 
+ 			WHERE star_level = :starLevel AND label_name = :labelName
+ 		]]>
+    </sql>
+    
+    <sql id="findLabelCodeByStar">
+    	<![CDATA[
+ 			select label_code from o2o_labels 
+ 			where star_level = :starLevel order by label_code desc limit 1
+ 		]]>
+    </sql>
+</sqlMap>

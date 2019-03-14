@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="spring-common.xml"/>
+
+    <!-- 拦截业务请求，添加cookies-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"/>
+            <bean class="com.suning.sntk.interceptor.SntkAdminAuthInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <context:component-scan base-package="com.suning.sntk"/>
+    <bean id="webPropertyConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:conf/main-setting-web.properties</value>
+            </list>
+        </property>
+        <property name="placeholderPrefix" value="@{"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+    </bean>
+    <bean class="com.suning.store.commons.web.ResponseDtoAdvice">
+        <constructor-arg ref="messageSource"/>
+        <property name="excludedClasses">
+            <array>
+                <value>com.suning.store.commons.web.ResponseDto</value>
+                <value>com.suning.sntk.admin.vo.DataResponse</value>
+            </array>
+        </property>
+        <property name="exceptionFactory" ref="exceptionFactory"/>
+    </bean>
+
+    <bean name="/mgmt/select.json" class="com.suning.sntk.mgmt.SQLSelectHttpRequestHandler">
+        <property name="defaultProps">
+            <util:properties location="classpath:conf/druid/wall/mysql/props.properties"></util:properties>
+        </property>
+        <property name="configPath" value="/conf/druid/wall/mysql" />
+        <property name="dataSource" ref="sntkjndi"/>
+    </bean>
+
+    <mvc:annotation-driven conversion-service="conversionService" validator="validator">
+        <mvc:argument-resolvers>
+            <bean class="com.suning.store.commons.web.pagination.DalPageableArgumentResolver">
+                <property name="firstPage" value="1"/>
+            </bean>
+        </mvc:argument-resolvers>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="defaultCharset" value="UTF-8"/>
+                <property name="objectMapper">
+                    <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+                        <property name="simpleDateFormat" value="yyyy-MM-dd HH:mm:ss"/>
+                        <property name="serializationInclusion" value="NON_NULL"/>
+                    </bean>
+                </property>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+            </bean>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="defaultCharset" value="UTF-8"/>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/plain</value>
+                        <value>*/*</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <bean id="conversionService"
+          class="org.springframework.context.support.ConversionServiceFactoryBean"/>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 上传文件大小上限，单位为字节（50MB） -->
+        <property name="maxUploadSize" value="52428800"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

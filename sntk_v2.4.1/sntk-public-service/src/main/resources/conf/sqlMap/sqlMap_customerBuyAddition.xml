@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="customerBuyAddition" jdbcTimeout="5">
+
+    <sql id="querySelfLabel">
+        <![CDATA[
+			SELECT
+	            other_label,
+	            expect_purchase_time,
+	            purchase_remark
+            FROM
+	            mb_customer_buy_addition
+            WHERE staff_id = :staffId
+			and union_id = :unionId
+ 		]]>
+    </sql>
+
+    <sql id="querySelfLabelList">
+        <![CDATA[
+			SELECT
+	            union_id as unionId,
+	            other_label as labelStr
+            FROM
+	            mb_customer_buy_addition
+            WHERE staff_id = :staffId
+			and union_id in (:unionIds)
+ 		]]>
+    </sql>
+
+    <sql id="deleteBuyAddition">
+        <![CDATA[
+			  delete from mb_customer_buy_addition
+			    where
+			    staff_id = :staffId
+			    and
+			    union_id = :unionId
+ 		]]>
+    </sql>
+
+</sqlMap>

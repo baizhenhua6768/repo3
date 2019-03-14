@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>缓存管理页面</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+	<link rel="stylesheet" href="http://simp.admin.cnsuning.com/simpbe-admin/resources/css/reset.css" />
+	<link rel="stylesheet" href="http://simp.admin.cnsuning.com/simpbe-admin/resources/css/base.css" />
+	<link rel="stylesheet" href="http://simp.admin.cnsuning.com/simpbe-admin/resources/css/main.css" />
+	
+	<script type="text/javascript" src="http://simp.admin.cnsuning.com/simpbe-admin/resources/js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="http://simp.admin.cnsuning.com/simpbe-admin/resources/js/main.js"></script>
+	<script type="text/javascript" src="http://simp.admin.cnsuning.com/simpbe-admin/resources/js/utils.js"></script>
+
+	<link rel="stylesheet" href="http://simp.admin.cnsuning.com/simpbe-admin/resources/css/metro-gray/easyui.css" />
+	<style type="text/css">
+		.p-container .container{font-size:12px;}
+		.key{width:100px;display:inline-blick;font-family:Courier New;font-size:12px;padding:0 5px;}
+		table{border-collapse:collapse;}
+		table td{border:1px solid gray;word-break:break-all; padding:5px 0 }
+		table td a{font-size:12px;margin:0px 5px;}
+		table td:nth-child(2n-1){background:#fafafa;cursor:default;}
+		table td:nth-child(2n-1):hover{background:#e7f4fb;}
+		.accordion .accordion-header-selected{background:#30bfb3}
+	</style>
+</head>
+<body>
+
+<div fit="true" class="easyui-panel" border="false"  >
+	<div id="ik"  fit="true"  style="width:100%;height:10%; margin: 30px">
+		KEY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input id="input_key" type="text" style="width: 400px; height: 30px; border:1px solid"/>
+		<input id="query" type="button" style="width: 100px; height: 30px; border:1px solid" value="查询"/>
+		<input id="delete" type="button" style="width: 100px; height: 30px; border:1px solid" value="删除"/>
+	</div>
+	<div id="tt" fit="true" style="width:80%;height:80%;">
+	</div>
+
+</div>
+
+<script type="text/javascript" src="http://simp.admin.cnsuning.com/simpbe-admin/resources/js/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+    $("#query").bind("click", queryPageData);
+    $("#delete").bind("click", clearCacheByKey);
+})
+
+var queryPageData = function(){
+    if (!$('#input_key').val()) {
+        alert("请输入要查询的缓存 KEY");
+        return;
+	}
+    $.ajax({
+   		url:"../cache/queryCacheDetailByKey.do",
+		data: {key: $('#input_key').val()},
+   		dataType:"json",
+   		success:function(data){
+            buildDetailPage(data);
+   			$('#tt').tabs({
+			    border:false,
+			    fit:true,
+			    tabPosition:'bottom'
+			});
+    	}
+   	});
+}
+
+
+function clearCacheByKey(){
+    if (!$('#input_key').val()) {
+        alert("请输入要查询的缓存 KEY");
+        return;
+    }
+	$.messager.confirm('提醒', 
+		'确定删除所选的缓存?', function (r) {
+		if(!r){
+			return;
+		}
+		$.ajax({
+	        url: '../cache/clearCacheByKey.do?key=' + $('#input_key').val(),
+	        dataType:'json'
+	    }).done(function (data) {
+	    	if(data.data.result > 0){
+	    		$.messager.show({title: "提示", msg: '缓存删除成功', timeout: 1500});
+	    	}else{
+	    		$.messager.show({title: "提示", msg: 'key不存在或已过期了', timeout: 1500});
+	    	}
+            $("#tt").html('<span class="key" style="color:red;">已删除</span>');
+	    });
+	});
+}
+
+function clearHashByKeyAndField(key,field,obj){
+	$.messager.confirm('提醒', 
+		'确定删除所选的缓存?', function (r) {
+		if(!r){
+			return;
+		}
+		$.ajax({
+	        url: '../cache/clearHashByKeyAndField.do?key='+key+'&field='+field,
+	        dataType:'json'
+	    }).done(function (data) {
+	    	if(data.data.result > 0){
+	    		$.messager.show({title: "提示", msg: '缓存删除成功', timeout: 1500});
+	    	}else{
+	    		$.messager.show({title: "提示", msg: 'key,field不存在或已过期了', timeout: 1500});
+	    	}
+	    	$(obj).parents('tr').remove();
+	    });
+    });
+}
+
+		function buildDetailPage(data){
+            $("#tt").html("");
+			var error = data.error;
+			if(error){
+				$('<span style="color:red">'+error+'</span>').appendTo('#tt');
+				return;
+			}
+			var type = data.type;
+			var key = data.key;
+			var leftTime = data.leftTime;
+			var html = '';
+			if(type == 'string'){
+				var cache = data.cache;
+				html = createStringItem(key, leftTime, cache, type);
+			}else if(type == 'hash'){
+				var cacheList = data.cacheList;
+				html = createHashItem(key, leftTime, cacheList, type);
+			}else{
+				var values = data.value;
+				html = createOtherItem(key, leftTime, values, type);
+			}
+			$("#tt").html(html)
+		}
+		
+		function createStringItem(key, leftTime, cache, type){
+			var html = '<table style="width:80%;margin: 0px auto">\
+				<tr>\
+					<td style="width:250px;padding-left:10px;font-weight:bold;">TYPE</td>\
+					<td colspan="2" style="color:#ff5500;font-size:14px;padding-left:10px" align="left"><b>' + type + '</b></td>\
+				</tr>\
+				<tr>\
+					<td style="width:250px;padding-left:10px;font-weight:bold;">key</td>\
+					<td style="padding-left:10px;font-weight:bold;">value</td>\
+					<td style="width:150px;padding-left:10px;font-weight:bold;">expire</td>\
+				</tr>\
+				<tr>\
+					<td style="padding-left:10px;color:#0081C2;">'+key+'</td>\
+					<td style="padding-left:10px;color:#15A230;">'+cache.value+'</td>\
+					<td style="padding-left:10px;color:#ff0000;">'+leftTime+'s</td>\
+				</tr>\
+			</table>';
+			return html;
+		}
+		
+		function createHashItem(key, leftTime, caches, type){
+			var html = '<table style="width:80%; margin: 0px auto">\
+				<tr>\
+					<td style="width:250px;padding-left:10px;font-weight:bold;">TYPE</td>\
+					<td colspan="3" style="color:#ff5500;font-size:14px;padding-left:10px" align="left"><b>' + type + '</b></td>\
+				</tr>\
+				<tr>\
+					<td style="width:250px;padding-left:10px;font-weight:bold;">KEY</td>\
+					<td colspan="3" style="color:#ff5500;font-size:14px;padding-left:10px" ><b>'+key+'</b></td>\
+				</tr>\
+				<tr>\
+					<td style="width:150px;padding-left:10px;font-weight:bold;" >field</td>\
+					<td style="padding-left:10px;font-weight:bold;">value</td>\
+					<td style="width:60px;padding-left:10px;font-weight:bold;">expire</td>\
+					<td style="width:90px;padding-left:10px;font-weight:bold;">操作</td>\
+				</tr>';
+			for(var i=0;i<caches.length;i++){
+				var cache = caches[i];
+				html += '<tr>\
+					<td style="padding-left:10px;color:#0081C2;">'+cache.field+'</td>\
+					<td style="padding-left:10px;color:#0081C2;">'+cache.value+'</td>\
+					<td style="padding-left:10px;color:#ff0000;">'+leftTime+'s</td>\
+					<td style="padding-left:10px;color:#0081C2;">\
+						<a href="javascript:void(0);" onclick="clearHashByKeyAndField(\''+key+'\',\''+cache.field+'\',this)">删除</a>\
+					</td>\
+				</tr>';
+			}	
+			html +='</table>';
+			return html;
+		}
+		
+		function createOtherItem(key, leftTime, values, type){
+			var html = '<table style="width:80%; margin: 0px auto">\
+				<tr>\
+					<td style="width:250px;padding-left:10px;font-weight:bold;">TYPE</td>\
+					<td colspan="2" style="color:#ff5500;font-size:14px;padding-left:10px" align="left"><b>' + type + '</b></td>\
+				</tr>\
+				<tr>\
+					<td style="width:250px;padding-left:10px;font-weight:bold;">KEY</td>\
+					<td colspan="2" style="color:#ff5500;font-size:14px;padding-left:10px"><b>'+key+'</b></td>\
+				</tr>\
+				<tr>\
+					<td style="width:50px;padding-left:10px;font-weight:bold;">序号</td>\
+					<td style="padding-left:10px;font-weight:bold;">value</td>\
+					<td style="width:150px;padding-left:10px;font-weight:bold;">expire</td>\
+				</tr>';
+			for(var i=0;i<values.length;i++){
+				var v = values[i];
+				html += '<tr>\
+					<td style="padding-left:10px;color:#0081C2;">'+(i+1)+'</td>\
+					<td style="padding-left:10px;color:#15A230;">'+v+'</td>\
+					<td style="padding-left:10px;color:#ff0000;">'+leftTime+'s</td>\
+				</tr>';
+			}
+			return html;
+		}
+</script>
+
+</body>
+</html>

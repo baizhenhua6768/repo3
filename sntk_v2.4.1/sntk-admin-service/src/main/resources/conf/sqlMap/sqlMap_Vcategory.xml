@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="v_category" jdbcTimeout="5">
+
+    <!-- 根据品类编码批量查询平类信息 -->
+    <sql id="batchQueryByCatregoryCode">
+        <![CDATA[
+           SELECT
+                category_id AS id,
+                category_name AS catagoryName,
+                category_code AS categoryCode
+           FROM
+                o2ob_v_category
+           WHERE
+                category_code in (:categoryCodes)
+        ]]>
+    </sql>
+</sqlMap>

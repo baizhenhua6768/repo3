@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <bean id="exportExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+        <property name="daemon" value="true"/>
+        <property name="corePoolSize" value="5"/>
+        <!--存活时间为 半个小时-->
+        <property name="keepAliveSeconds" value="1800"/>
+        <property name="queueCapacity" value="20"/>
+        <property name="threadNamePrefix" value="导出线程池"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="allowCoreThreadTimeOut" value="true"/>
+    </bean>
+
+
+</beans>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <bean class="com.suning.store.commons.lang.advice.MethodTraceAdvice"/>
+    <bean id="exceptionFactory" class="com.suning.sntk.support.exception.SntkServiceExceptionFactory"/>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="basename" value="messages.exceptions"/>
+    </bean>
+
+    <bean id="validateMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages.validationMessages"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        <property name="validationMessageSource" ref="validateMessageSource"/>
+        <property name="validationProperties">
+            <props>
+                <prop key="hibernate.validator.fail_fast">true</prop>
+            </props>
+        </property>
+    </bean>
+    <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">
+        <property name="validatorFactory" ref="validator"/>
+    </bean>
+</beans>

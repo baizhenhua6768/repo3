@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.suning.sntk</groupId>
+    <artifactId>sntk-rsf</artifactId>
+    <name>sntk-rsf</name>
+    <packaging>jar</packaging>
+    <version>2.2.1-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.suning.framework</groupId>
+            <artifactId>rsf</artifactId>
+            <version>2.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.suning.store.commons</groupId>
+            <artifactId>store-commons-rsf</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.suning.store.commons</groupId>
+            <artifactId>store-commons-pagination</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.apache.commons</groupId>
+        	<artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.hibernate</groupId>
+        	<artifactId>hibernate-validator</artifactId>
+            <version>4.3.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.suning.sntk</groupId>
+            <artifactId>sntk-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>http://maven.cnsuning.com/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>http://maven.cnsuning.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

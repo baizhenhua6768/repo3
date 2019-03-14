@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="store_detail" jdbcTimeout="5">
+    <!-- 查询区域详情 -->
+    <sql id="queryStaffUnit">
+        <![CDATA[
+            SELECT
+				STORE_CODE AS storeCode,
+				NAME AS storeName,
+				CITY_ID AS cityId,
+				CITY_NAME AS cityName,
+				REGION_ID AS regionId,
+				REGION_NAME AS regionName
+			FROM
+				O2O_STORE_DETAIL
+			WHERE 1 = 1
+			   <#if storeCode?exists> and STORE_CODE =  :storeCode </#if>
+			   <#if regionId?exists> and REGION_ID =  :regionId </#if>
+			   <#if cityId?exists> and CITY_ID =  :cityId </#if>
+        ]]>
+    </sql>
+
+    <!-- 根据门店编码查询门店信息 -->
+    <sql id="queryStoreInfoByStoreCode">
+        <![CDATA[
+            SELECT
+				STORE_CODE AS storeCode,
+				NAME AS storeName,
+				CITY_ID AS cityId,
+				V_FLAG AS vFlag,
+				MULTI_FORMAT_TYPE AS multiFormatType
+			FROM
+				O2O_STORE_DETAIL
+			WHERE
+			    STORE_CODE = :storeCode
+			LIMIT 1
+        ]]>
+    </sql>
+
+    <sql id="queryRegionList">
+        <![CDATA[
+        SELECT DISTINCT
+        REGION_ID AS regionId,
+        REGION_NAME AS regionName
+        FROM O2O_STORE_DETAIL
+        WHERE 1=1
+        <#if regionId?exist && regionId!="">
+        AND REGION_ID =:regionId
+        </#if>
+        ]]>
+    </sql>
+
+    <sql id="queryCompanyList">
+        <![CDATA[
+        SELECT DISTINCT
+        CITY_ID AS compCode,
+        CITY_NAME AS compName
+        FROM O2O_STORE_DETAIL
+        WHERE 1=1
+        <#if regionCode?exist && regionCode!="">
+        AND REGION_ID =:regionCode
+        </#if>
+        GROUP BY CITY_ID
+        ]]>
+    </sql>
+
+    <sql id="queryStoreList">
+        <![CDATA[
+        SELECT DISTINCT
+        STORE_CODE AS storeCode,
+        NAME AS storeName
+        FROM O2O_STORE_DETAIL
+        WHERE 1=1
+        <#if compCode?exist && compCode!="">
+        AND CITY_ID =:compCode
+        </#if>
+        ]]>
+    </sql>
+
+    <sql id="updateStoreVgoFlag">
+        <![CDATA[
+        update o2o_store_detail
+        set V_FLAG =:vgoFlag
+        where STORE_CODE =:storeCode
+        ]]>
+    </sql>
+
+    <sql id="queryVgoCityStoreInfo">
+        <![CDATA[
+        SELECT
+				d.store_code AS storeCode,
+                d.name AS storeName,
+                d.address AS storeAddress,
+                d.longitude,
+				d.latitude,
+				d.type AS storeType,
+				d.city_id AS cityId,
+				d.district_id AS districtId,
+				IFNULL(a.ATTENTION_COUNT,0) as attentionCount
+            FROM o2o_store_detail d left join o2o_store_attention  a
+			 on d.store_code =  a.store_code
+			where d.V_FLAG='1' and d.CITY_ID=:cityId
+			order by a.ATTENTION_COUNT
+        ]]>
+    </sql>
+
+    <sql id="queryVgoCityNoMarketInfo">
+        <![CDATA[
+        SELECT
+            d.STORE_CODE AS storeCode,
+            d.NAME AS storeName,
+            d.ADDRESS AS storeAddress,
+            d.TYPE AS storeType,
+            d.longitude,
+            d.latitude,
+            d.V_FLAG AS vFlag,
+            IFNULL(a.ATTENTION_COUNT,0) AS attentionCount
+        FROM o2o_store_detail d
+        LEFT JOIN o2o_store_attention a
+        ON a.CITY_ID = d.CITY_ID
+        AND a.STORE_CODE = d.STORE_CODE
+        WHERE d.CITY_ID = :cityId
+        AND d.TYPE not like '%超市%'
+        ORDER BY a.ATTENTION_COUNT DESC
+        ]]>
+    </sql>
+
+    <!-- 根据员工层级查询大区信息 -->
+    <sql id="queryRegionInfoByStaffUnit">
+        <![CDATA[
+            SELECT
+                DISTINCT
+                REGION_ID AS orgId,
+                REGION_NAME AS orgName
+            FROM
+                o2o_store_detail
+            WHERE
+                1=1
+                <#if staffUnitDto.regionId?exists && staffUnitDto.regionId != ""> AND REGION_ID=:staffUnitDto.regionId </#if>
+                <#if staffUnitDto.orgId?exists && staffUnitDto.orgId != ""> AND FINANCE_ORG_ID=:staffUnitDto.orgId </#if>
+                <#if staffUnitDto.storeCode?exists && staffUnitDto.storeCode != ""> AND STORE_CODE=:staffUnitDto.storeCode </#if>
+        ]]>
+    </sql>
+
+    <!-- 查询大区下的分公司列表 -->
+    <sql id="queryCompanyInfoList">
+        <![CDATA[
+            SELECT
+                DISTINCT
+                FINANCE_ORG_ID AS orgId
+            FROM
+                O2O_STORE_DETAIL
+            WHERE
+                1=1
+            <#if staffUnitDto.regionId?exists && staffUnitDto.regionId != ""> AND REGION_ID=:staffUnitDto.regionId </#if>
+            <#if staffUnitDto.orgId?exists && staffUnitDto.orgId != ""> AND FINANCE_ORG_ID=:staffUnitDto.orgId </#if>
+            <#if staffUnitDto.storeCode?exists && staffUnitDto.storeCode != ""> AND STORE_CODE=:staffUnitDto.storeCode </#if>
+        ]]>
+    </sql>
+    <!-- 查询分公司下的门店 -->
+    <sql id="queryStoreInfoList">
+        <![CDATA[
+            SELECT DISTINCT
+                STORE_CODE AS orgId,
+                NAME AS orgName
+            FROM O2O_STORE_DETAIL
+            WHERE 1=1
+            <#if staffUnitDto.orgId?exists && staffUnitDto.orgId != ""> AND FINANCE_ORG_ID=:staffUnitDto.orgId </#if>
+            <#if staffUnitDto.storeCode?exists && staffUnitDto.storeCode != ""> AND STORE_CODE=:staffUnitDto.storeCode </#if>
+        ]]>
+    </sql>
+
+</sqlMap>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="eiBeanPostProcessor" class="com.suning.rsc.EIClientBeanPostProcessor">
+        <property name="authIdMaps">
+            <map>
+                <entry key="com.suning.sntk.service.esb.ShopFrequencyEsbService"
+                       value="$[esb_authorId]">
+                </entry>
+            </map>
+        </property>
+        <property name="httpServiceLocations">
+            <map>
+                <entry key="com.suning.sntk.service.esb.ShopFrequencyEsbService" value="$[esb_url]">
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>
+

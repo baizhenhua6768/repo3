@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="guideAudit" jdbcTimeout="5">
+
+    <!-- 批量查询导购审核信息 -->
+    <sql id="queryAuditGuideForPage">
+        <![CDATA[
+            SELECT
+                a.GUIDE_ID AS guideId,
+                a.GUIDE_NAME AS guideName,
+                b.REGION_NAME AS regionName,
+                b.FINANCE_ORG_ID AS orgId,
+                b.NAME AS storeName,
+                a.HIERARCHY AS hierarchy,
+                a.ATTACH AS attach,
+                a.AUDIT_REASON AS auditReason
+            FROM
+                o2ob_v_guide_audit a
+            LEFT JOIN
+                o2o_store_detail b
+            ON
+                a.STORE_CODE = b.STORE_CODE
+            WHERE
+                1=1
+                <#if guideReqDto.businessType?exists && guideReqDto.businessType!=""> and a.BUSINESS_TYPE = :guideReqDto.businessType </#if>
+                <#if guideReqDto.guideName?exists && guideReqDto.guideName!=""> and instr(a.GUIDE_NAME,:guideReqDto.guideName)>0 </#if>
+                <#if guideReqDto.guideId?exists && guideReqDto.guideId!=""> and a.GUIDE_ID = :guideReqDto.guideId </#if>
+                <#if guideReqDto.regionId?exists && guideReqDto.regionId!=""> and b.REGION_ID = :guideReqDto.regionId </#if>
+                <#if guideReqDto.orgId?exists && guideReqDto.orgId!=""> and b.FINANCE_ORG_ID = :guideReqDto.orgId </#if>
+                <#if guideReqDto.storeCode?exists && guideReqDto.storeCode!=""> and b.STORE_CODE = :guideReqDto.storeCode </#if>
+                <#if guideReqDto.hierarchy?exists && guideReqDto.hierarchy!=""> and a.hierarchy = :guideReqDto.hierarchy </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach=="07"> and a.attach = :guideReqDto.attach </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach!="07"> and a.attach != "07" </#if>
+                <#if guideReqDto.auditFlag?exists> and a.AUDIT_FLAG = :guideReqDto.auditFlag </#if>
+            ORDER BY
+                a.AUDIT_TIME DESC
+            LIMIT :offset,:size
+        ]]>
+    </sql>
+
+    <!-- 查询导购审核信息数量 -->
+    <sql id="queryAuditGuideForPage#count">
+        <![CDATA[
+            SELECT
+                COUNT(1)
+            FROM
+                o2ob_v_guide_audit a
+            LEFT JOIN
+                o2o_store_detail b
+            ON
+                a.STORE_CODE = b.STORE_CODE
+            WHERE
+                1=1
+                <#if guideReqDto.businessType?exists && guideReqDto.businessType!=""> and a.BUSINESS_TYPE = :guideReqDto.businessType </#if>
+                <#if guideReqDto.guideName?exists && guideReqDto.guideName!=""> and instr(a.GUIDE_NAME,:guideReqDto.guideName)>0 </#if>
+                <#if guideReqDto.guideId?exists && guideReqDto.guideId!=""> and a.GUIDE_ID = :guideReqDto.guideId </#if>
+                <#if guideReqDto.regionId?exists && guideReqDto.regionId!=""> and b.REGION_ID = :guideReqDto.regionId </#if>
+                <#if guideReqDto.orgId?exists && guideReqDto.orgId!=""> and b.FINANCE_ORG_ID = :guideReqDto.orgId </#if>
+                <#if guideReqDto.storeCode?exists && guideReqDto.storeCode!=""> and b.STORE_CODE = :guideReqDto.storeCode </#if>
+                <#if guideReqDto.hierarchy?exists && guideReqDto.hierarchy!=""> and a.hierarchy = :guideReqDto.hierarchy </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach=="07"> and a.attach = :guideReqDto.attach </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach!="07"> and a.attach != "07" </#if>
+                <#if guideReqDto.auditFlag?exists> and a.AUDIT_FLAG = :guideReqDto.auditFlag </#if>
+        ]]>
+    </sql>
+
+    <!-- 批量查询导购审核信息 -->
+    <sql id="queryAuditGuidePage">
+        <![CDATA[
+            SELECT
+                a.GUIDE_ID AS guideId,
+                a.GUIDE_NAME AS guideName,
+                b.REGION_NAME AS regionName,
+                b.FINANCE_ORG_ID AS orgId,
+                b.NAME AS storeName,
+                a.HIERARCHY AS hierarchy,
+                a.ATTACH AS attach,
+                a.AUDIT_REASON AS auditReason
+            FROM
+                o2ob_v_guide_audit a
+            LEFT JOIN
+                o2o_store_detail b
+            ON
+                a.STORE_CODE = b.STORE_CODE
+            WHERE
+                1=1
+                <#if guideReqDto.businessType?exists && guideReqDto.businessType!=""> and a.BUSINESS_TYPE = :guideReqDto.businessType </#if>
+                <#if guideReqDto.guideName?exists && guideReqDto.guideName!=""> and instr(a.GUIDE_NAME,:guideReqDto.guideName)>0 </#if>
+                <#if guideReqDto.guideId?exists && guideReqDto.guideId!=""> and a.GUIDE_ID = :guideReqDto.guideId </#if>
+                <#if guideReqDto.regionId?exists && guideReqDto.regionId!=""> and b.REGION_ID = :guideReqDto.regionId </#if>
+                <#if guideReqDto.orgId?exists && guideReqDto.orgId!=""> and b.FINANCE_ORG_ID = :guideReqDto.orgId </#if>
+                <#if guideReqDto.storeCode?exists && guideReqDto.storeCode!=""> and b.STORE_CODE = :guideReqDto.storeCode </#if>
+                <#if guideReqDto.hierarchy?exists && guideReqDto.hierarchy!=""> and a.hierarchy not in ("00000290","00000300","00010001","00010002") </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach=="07"> and a.attach = :guideReqDto.attach </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach!="07"> and a.attach != "07" </#if>
+                <#if guideReqDto.auditFlag?exists> and a.AUDIT_FLAG = :guideReqDto.auditFlag </#if>
+            ORDER BY
+                a.AUDIT_TIME DESC
+            LIMIT :offset,:size
+        ]]>
+    </sql>
+
+    <!-- 查询导购审核信息数量 -->
+    <sql id="queryAuditGuidePage#count">
+        <![CDATA[
+            SELECT
+                COUNT(1)
+            FROM
+                o2ob_v_guide_audit a
+            LEFT JOIN
+                o2o_store_detail b
+            ON
+                a.STORE_CODE = b.STORE_CODE
+            WHERE
+                1=1
+                <#if guideReqDto.businessType?exists && guideReqDto.businessType!=""> and a.BUSINESS_TYPE = :guideReqDto.businessType </#if>
+                <#if guideReqDto.guideName?exists && guideReqDto.guideName!=""> and instr(a.GUIDE_NAME,:guideReqDto.guideName)>0 </#if>
+                <#if guideReqDto.guideId?exists && guideReqDto.guideId!=""> and a.GUIDE_ID = :guideReqDto.guideId </#if>
+                <#if guideReqDto.regionId?exists && guideReqDto.regionId!=""> and b.REGION_ID = :guideReqDto.regionId </#if>
+                <#if guideReqDto.orgId?exists && guideReqDto.orgId!=""> and b.FINANCE_ORG_ID = :guideReqDto.orgId </#if>
+                <#if guideReqDto.storeCode?exists && guideReqDto.storeCode!=""> and b.STORE_CODE = :guideReqDto.storeCode </#if>
+                <#if guideReqDto.hierarchy?exists && guideReqDto.hierarchy!=""> and a.hierarchy not in ("00000290","00000300","00010001","00010002") </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach=="07"> and a.attach = :guideReqDto.attach </#if>
+                <#if guideReqDto.attach?exists && guideReqDto.attach!="" && guideReqDto.attach!="07"> and a.attach != "07" </#if>
+                <#if guideReqDto.auditFlag?exists> and a.AUDIT_FLAG = :guideReqDto.auditFlag </#if>
+        ]]>
+    </sql>
+
+    <sql id="queryAuditGuideInfo">
+        <![CDATA[
+        select
+            ID as id,
+            GUIDE_ID as guideId,
+            STORE_CODE as storeCode,
+            GUIDE_PHOTO as guidePhoto,
+            GUIDE_NAME as guideName,
+            INTRODUCTION as introduction,
+            SALE_AGE as saleAge,
+            is_Vgo as isVgo,
+            audit_flag as auditFlag,
+            audit_reason as auditReason,
+            category_ids as categoryIds,
+            server_items as serviceItems,
+            business_type as businessType,
+            hierarchy,
+            attach,
+            CREATE_TIME as createTime,
+            CREATE_PERSON as createPerson,
+            UPDATE_TIME as updateTime,
+            UPDATE_PERSON as updatePerson,
+            audit_TIME as auditTime,
+            audit_PERSON as auditPerson
+        from o2ob_v_guide_audit
+        where GUIDE_ID =:guideId
+        and audit_flag = 0
+        ]]>
+    </sql>
+
+    <!-- 根据工号查询待审核详细信息 -->
+    <sql id="queryToBeAuditedDetail">
+        <![CDATA[
+            SELECT
+                a.ID AS id,
+                a.GUIDE_ID AS guideId,
+                a.GUIDE_NAME AS guideName,
+                a.HIERARCHY AS hierarchy,
+                a.ATTACH AS attach,
+                a.GUIDE_PHOTO AS guidePhoto,
+                a.INTRODUCTION AS introduction,
+                a.SALE_AGE AS saleAge,
+                a.IS_VGO AS isVgo,
+                a.category_ids AS categoryIds,
+                a.server_items AS serverItems,
+                a.STORE_CODE AS storeCode,
+                a.BUSINESS_TYPE AS businessType,
+                b.REGION_NAME AS regionName,
+                b.FINANCE_ORG_ID AS orgId,
+                b.NAME AS storeName
+            FROM
+                o2ob_v_guide_audit a
+            LEFT JOIN
+                o2o_store_detail b
+            ON
+                a.STORE_CODE = b.STORE_CODE
+            WHERE
+                a.GUIDE_ID = :guideId
+            AND
+                a.audit_flag = 0
+        ]]>
+    </sql>
+
+    <!-- 根据工号查询待审核信息 -->
+    <sql id="queryToBeAuditedGuide">
+        <![CDATA[
+            SELECT
+                ID AS id,
+                GUIDE_ID AS guideId,
+                GUIDE_NAME AS guideName,
+                HIERARCHY AS hierarchy,
+                ATTACH AS attach,
+                GUIDE_PHOTO AS guidePhoto,
+                INTRODUCTION AS introduction,
+                SALE_AGE AS saleAge,
+                IS_VGO AS isVgo,
+                category_ids AS categoryIds,
+                server_items AS serverItems,
+                STORE_CODE AS storeCode,
+                BUSINESS_TYPE AS businessType
+            FROM
+                o2ob_v_guide_audit
+            WHERE
+                GUIDE_ID = :guideId
+            AND
+                audit_flag = 0
+        ]]>
+    </sql>
+</sqlMap>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.suning.store.dal:store-dal-annotation:1.0.4-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/store/dal/store-dal-annotation/1.0.4-SNAPSHOT/store-dal-annotation-1.0.4-20180629.034120-46.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/store/dal/store-dal-annotation/1.0.4-SNAPSHOT/store-dal-annotation-1.0.4-20180629.034120-46-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/store/dal/store-dal-annotation/1.0.4-SNAPSHOT/store-dal-annotation-1.0.4-20180629.034120-46-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

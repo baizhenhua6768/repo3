@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="customerCateIntention" jdbcTimeout="5">
+
+    <sql id="deleteCateIntention">
+        <![CDATA[
+			  delete from mb_customer_cate_intention
+			    where
+			    staff_id = :staffId
+			    and
+			    union_id = :unionId
+ 		]]>
+    </sql>
+
+    <sql id="queryCateIntention">
+        <![CDATA[
+			  select
+			    category_no as categoryNo,
+				category_name as categoryName,
+			    brands as brandName,
+			    min_price as minPrice,
+			    max_price as maxPrice
+			  from mb_customer_cate_intention
+			  where
+			    staff_id = :staffId
+			  and
+			    union_id = :unionId
+ 		]]>
+    </sql>
+</sqlMap>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+
+	<resource-ref>
+		<res-ref-name>jdbc/sntk</res-ref-name>
+		<jndi-name>java:jboss/sntk_wrs</jndi-name>
+	</resource-ref>
+	
+	<resource-ref>
+		<res-ref-name>jdbc/sntk_read</res-ref-name>
+		<jndi-name>java:jboss/sntk_rs</jndi-name>
+	</resource-ref>
+	
+	<context-root>/sntk-service-web</context-root>
+
+</jboss-web>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!---1.MQ发送方连接工厂及发送队列配置 begin-->
+    <!--1.1 连接工厂配置-->
+    <bean id="sntkJmsConnectionFactory" class="com.ibm.mq.jms.MQQueueConnectionFactory">
+        <property name="queueManager" value="$[mq_queueManager]"></property>
+        <property name="connectionNameList" value="$[mq_connectionNameList]"></property>
+        <property name="clientReconnectOptions" value="33554432"></property>
+        <property name="channel" value="$[mq_channel]"></property>
+        <property name="transportType" value="1"></property>
+        <property name="CCSID" value="1208"></property>
+    </bean>
+
+    <!--1.2：发送统一队列配置-->
+    <bean id="sntkSendQueue" class="com.ibm.mq.jms.MQQueue">
+        <property name="baseQueueName" value="SNTK_INPUTQ"></property>
+        <property name="CCSID" value="1208"></property>
+    </bean>
+    <!---1.MQ发送方连接工厂及发送队列配置 end-->
+
+    <!--发送工厂连接池（缓存）-->
+    <bean id="sntkSendCacheConnectionFactory"
+          class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="sntkJmsConnectionFactory"></property>
+        <property name="sessionCacheSize" value="10"></property>
+    </bean>
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="sntkSendCacheConnectionFactory"/>
+    </bean>
+
+</beans>

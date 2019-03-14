@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="comment" jdbcTimeout="5">
+    
+    <sql id="findCommentsByCustNoAndStaffId" >
+        <![CDATA[
+			select id,staff_id ,cust_no,star_level,label_codes,DATE_FORMAT(create_time,"%Y-%m-%d %T") as create_time
+			from o2o_guide_comments 
+			where cust_no = :custNo and staff_id = :staffId
+ 		]]>
+    </sql>
+    
+    <sql id="saveGuideCommentH" >
+        <![CDATA[
+			insert into o2o_guide_comments_h(staff_id ,cust_no,star_level,label_codes,create_time)
+			values (:guideComment.staffId,:guideComment.custNo,:guideComment.starLevel,:guideComment.labelCodes,:guideComment.createTime)
+ 		]]>
+    </sql>
+    
+    <sql id="findAvgStarByStaffId" >
+        <![CDATA[
+			SELECT round(avg(star_level),1) 
+			FROM o2o_guide_comments 
+			WHERE staff_id = :staffId
+ 		]]>
+    </sql>
+    
+    <sql id="findProfileCommentByStaffId">
+    	<![CDATA[
+			select group_concat(label_codes) from o2o_guide_comments 
+			where staff_id = :staffId
+ 		]]>
+    	
+    </sql>
+    
+</sqlMap>

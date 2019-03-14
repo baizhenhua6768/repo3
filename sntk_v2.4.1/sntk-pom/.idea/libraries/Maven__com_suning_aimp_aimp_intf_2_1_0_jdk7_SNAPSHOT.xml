@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.suning.aimp:aimp-intf:2.1.0-jdk7-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/aimp/aimp-intf/2.1.0-jdk7-SNAPSHOT/aimp-intf-2.1.0-jdk7-20180606.075158-4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/aimp/aimp-intf/2.1.0-jdk7-SNAPSHOT/aimp-intf-2.1.0-jdk7-20180606.075158-4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/aimp/aimp-intf/2.1.0-jdk7-SNAPSHOT/aimp-intf-2.1.0-jdk7-20180606.075158-4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

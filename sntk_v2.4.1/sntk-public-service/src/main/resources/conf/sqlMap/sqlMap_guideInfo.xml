@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="guideInfo" jdbcTimeout="5">
+
+    <sql id="queryAllCustManager">
+        <![CDATA[
+			SELECT
+				id,
+				staff_id as staffId,
+				staff_name as staffName,
+				cust_no as custNo,
+				store_code as storeCode,
+				business_type as businessType
+			FROM
+				o2o_staff_cust_rel
+			WHERE delete_flag = 0
+ 		]]>
+    </sql>
+
+    <sql id="queryAllGuideInfoByGuideId">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.grade as starGrade,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.sale_age saleAge,
+                a.business_type as businessType,
+                a.dimission_flag as dimissionFlag,
+                b.name as storeName,
+                b.short_name as storeShortName,
+                b.address as storeAddress,
+                b.longitude as storeLongitude,
+                b.latitude as storeLatitude
+            FROM
+                o2o_v_guide_info a
+            inner join o2o_store_detail b
+            on a.store_code = b.store_code
+            where a.guide_id = :guideId and
+                a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+    <sql id="queryAllGuideInfoCount">
+        <![CDATA[
+            SELECT
+                count(1)
+            FROM
+                o2o_v_guide_info a
+            inner join o2o_store_detail b
+            on a.store_code = b.store_code
+            where
+                a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+    <sql id="queryAllGuideInfo">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.grade as starGrade,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.sale_age saleAge,
+                a.business_type as businessType,
+                a.dimission_flag as dimissionFlag,
+                b.name as storeName,
+                b.short_name as storeShortName,
+                b.address as storeAddress,
+                b.longitude as storeLongitude,
+                b.latitude as storeLatitude
+            FROM
+                o2o_v_guide_info a
+            inner join o2o_store_detail b
+            on a.store_code = b.store_code
+            where
+                a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+            LIMIT :offset, :size
+        ]]>
+
+    </sql>
+
+    <sql id="queryInfantGuideServiceItems">
+        <![CDATA[
+            SELECT
+                b.service_item_val as serviceItems
+            FROM
+                o2o_v_guide_info a
+            inner join o2ob_reservation_guide b
+            on a.guide_id = b.guide_id
+            where a.guide_id = :guideId
+            limit 4
+        ]]>
+
+    </sql>
+
+
+    <sql id="queryAllThreeDirectoryCategory">
+        <![CDATA[
+           SELECT
+                category_code as categoryCode,
+                out_code as outCode
+           from
+                o2ob_v_category_out_rel
+           where
+                out_type = 1
+    	]]>
+    </sql>
+
+    <sql id="queryAllCategory">
+        <![CDATA[
+           SELECT
+                distinct
+                category_id
+           from
+                o2ob_v_category_rela a
+           inner join o2ob_v_category_out_rel b
+           on a.category_id = b.category_code
+    	]]>
+    </sql>
+
+    <sql id="queryAllVgoStoreListCount">
+        <![CDATA[
+           SELECT
+                count(1)
+           from
+                o2o_store_detail a
+           inner join  o2o_v_guide_info b
+           on a.store_code = b.store_code
+           where b.open_flag = '1' and b.delete_flag = 0 and b.is_Vgo = 1 and b.dimission_flag = '0'
+           <#if businessType?exists && businessType != "">
+                and b.business_type = :businessType
+           </#if>
+    	]]>
+    </sql>
+
+    <sql id="queryAllVgoStoreList">
+        <![CDATA[
+           SELECT
+                distinct
+                a.store_code as storeId,
+                a.name,
+                a.short_name as shortName,
+                a.city_id as cityId,
+                a.district_id as districtId,
+                a.address,
+                a.longitude,
+                a.latitude,
+                b.business_type as businessType
+           from
+                o2o_store_detail a
+           inner join  o2o_v_guide_info b
+           on a.store_code = b.store_code
+           where b.open_flag = '1' and b.delete_flag = 0 and b.is_Vgo = 1 and b.dimission_flag = '0'
+           <#if businessType?exists && businessType != "">
+                and b.business_type = :businessType
+           </#if>
+           LIMIT :offset, :size
+    	]]>
+    </sql>
+
+    <sql id="queryAllStoreList">
+        <![CDATA[
+           SELECT
+                distinct
+                a.store_code as storeId,
+                a.name,
+                a.short_name as shortName,
+                a.city_id as cityId,
+                a.district_id as districtId,
+                a.address,
+                a.longitude,
+                a.latitude
+           from
+                o2o_store_detail a
+
+    	]]>
+    </sql>
+
+
+    <sql id="queryElectricStoreGuide">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.grade as starGrade,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.sale_age saleAge,
+                a.business_type as businessType,
+                a.dimission_flag as dimissionFlag,
+                b.category_id as categoryId,
+                c.name as storeName,
+                c.short_name as storeShortName,
+                c.address as storeAddress,
+                c.longitude as storeLongitude,
+                c.latitude as storeLatitude
+            FROM
+                o2o_v_guide_info a
+            inner join o2ob_v_category_rela b
+            on a.guide_id = b.guide_id
+            inner join o2o_store_detail c
+            on a.store_code = c.store_code
+            where
+                a.store_code = :storeCode and b.category_id = :cateCode and a.business_type = 1
+            and a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+    <sql id="queryInfantStoreGuide">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.grade as starGrade,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.business_type as businessType,
+                a.dimission_flag as dimissionFlag,
+                a.sale_age saleAge,
+                c.name as storeName,
+                c.short_name as storeShortName,
+                c.address as storeAddress,
+                c.longitude as storeLongitude,
+                c.latitude as storeLatitude
+            FROM
+                o2o_v_guide_info a
+            inner join o2ob_reservation_guide b
+            on a.guide_id = b.guide_id
+            inner join o2o_store_detail c
+            on a.store_code = c.store_code
+            where a.store_code = :storeCode and a.business_type = 2 and
+                a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+    <sql id="queryAllGuideCity">
+        <![CDATA[
+            SELECT
+                distinct
+                a.city_id as cityId
+            FROM
+                o2o_store_detail a
+            inner join o2o_v_guide_info b
+            on a.store_code = b.store_code
+            where b.open_flag = '1' and b.delete_flag = 0 and b.is_Vgo = 1 and b.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+    <sql id="queryGuideByCityAndCategory">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.grade as starGrade,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.sale_age saleAge,
+                a.business_type as businessType,
+                a.dimission_flag as dimissionFlag,
+                b.category_id as categoryId,
+                c.name as storeName,
+                c.short_name as storeShortName,
+                c.address as storeAddress,
+                c.longitude as storeLongitude,
+                c.latitude as storeLatitude,
+				c.city_id
+            FROM
+                o2o_v_guide_info a
+            inner join o2ob_v_category_rela b
+            on a.guide_id = b.guide_id
+            inner join o2o_store_detail c
+			on a.store_code = c.store_code
+            where c.city_id = :cityId and b.category_id = :cateCode and a.business_type = 1 and
+            a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+    <sql id="queryGuideByCity">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.grade as starGrade,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.sale_age saleAge,
+                a.business_type as businessType,
+                a.dimission_flag as dimissionFlag,
+                c.name as storeName,
+                c.short_name as storeShortName,
+                c.address as storeAddress,
+                c.longitude as storeLongitude,
+                c.latitude as storeLatitude,
+				c.city_id
+            FROM
+                o2o_v_guide_info a
+            inner join o2o_store_detail c
+			on a.store_code = c.store_code
+            where c.city_id = :cityId
+            and a.open_flag = '1' and a.delete_flag = 0 and a.is_Vgo = 1 and a.dimission_flag = '0'
+        ]]>
+
+    </sql>
+
+
+    <sql id="updateGuideInfo">
+        <![CDATA[
+        update o2o_v_guide_info
+        set business_code =:guideDto.businessCode,
+            ORDER_NUM =:guideDto.orderNum
+            where GUIDE_ID =:guideDto.guideId
+        ]]>
+    </sql>
+
+    <sql id="queryGuideBookingInfo">
+        <![CDATA[
+            SELECT
+                count(1)
+            FROM
+                o2o_v_guide_appointment
+            WHERE
+                guide_id = :guideId
+        ]]>
+
+    </sql>
+
+    <sql id="updateOrderNum">
+        <![CDATA[
+         UPDATE
+            o2o_v_guide_info
+         SET
+            ORDER_NUM = ifnull(ORDER_NUM,0)+1
+         where
+            GUIDE_ID=:guideId
+        ]]>
+    </sql>
+
+    <sql id="updateOrderNumB">
+        <![CDATA[
+         UPDATE
+            o2ob_v_guide_info
+         SET
+            ORDER_NUM = ifnull(ORDER_NUM,0)+1
+         where
+            GUIDE_ID=:guideId
+        ]]>
+    </sql>
+
+    <sql id="updateDimissionFlag">
+        <![CDATA[
+            UPDATE
+                o2o_v_guide_info
+            SET
+               DIMISSION_FLAG = '1'
+            WHERE
+                GUIDE_ID in (:staffList)
+        ]]>
+    </sql>
+
+    <sql id="queryGuideDetaiAudit">
+        <![CDATA[
+            SELECT
+                GUIDE_ID as guideId,
+                GUIDE_NAME as guideName,
+                STORE_CODE as storeCode,
+                GUIDE_PHOTO as guidePhoto,
+                INTRODUCTION AS introduction,
+                category_ids AS categoryIds,
+                server_items as serverName,
+                sale_age saleAge,
+                is_vgo as isVgo,
+                hierarchy,
+                attach,
+                audit_reason as auditReason,
+                business_type as businessType,
+                create_time
+            FROM
+                o2ob_v_guide_audit
+            WHERE
+                guide_id = :guideId
+            order by create_time desc
+            limit 1
+        ]]>
+    </sql>
+
+    <sql id="queryGuideDetai">
+        <![CDATA[
+            SELECT
+                GUIDE_PHOTO as guidePhoto,
+                INTRODUCTION AS introduction,
+                sale_age saleAge,
+                is_Vgo as isVgo
+            FROM
+                o2o_v_guide_info
+            WHERE
+                guide_id = :guideId
+        ]]>
+    </sql>
+
+    <!--查询店员是否客户经理-->
+    <sql id="queryIsCustomerManager">
+        <![CDATA[
+            SELECT
+				id,staff_id,staff_name,cust_no,store_code,channel,DATE_FORMAT(create_time,"%Y-%m-%d %T") as create_time,business_type
+			FROM
+				o2o_staff_cust_rel
+			WHERE
+				staff_id = :guideId and cust_no = :customerNum and delete_flag = '0'
+        ]]>
+    </sql>
+
+    <!--查询店员主页导购详情-->
+    <sql id="queryStaffPageGuideDetail">
+        <![CDATA[
+            SELECT
+                    DISTINCT a.GUIDE_ID AS guideId,
+                    a.GUIDE_NAME AS guideName,
+                    a.GUIDE_PHOTO AS guidePhoto,
+                    a.CATEGORY_NAME AS categoryName,
+                    a.STAR_LEVEL AS starLevel,
+                    a.grade AS starGrade,
+                    a.INTRODUCTION AS introduction,
+                    a.SALE_AGE AS saleAge,
+                    a.business_type AS businessType,
+                    b.STORE_CODE AS storeCode,
+                    b.NAME AS storeName,
+                    b.SHORT_NAME AS storeShortName,
+                    b.LONGITUDE AS longitude,
+                    b.LATITUDE AS latitude,
+                    b.ADDRESS AS storeAddress
+            FROM
+                    o2o_v_guide_info a,
+                    o2o_store_detail b
+            WHERE
+                    a.STORE_CODE = b.STORE_CODE
+                and a.GUIDE_ID = :guideId and b.STORE_STATUS='1' and a.OPEN_FLAG='1'
+            ]]>
+    </sql>
+
+
+    <sql id="queryGuideDetailList">
+        <![CDATA[
+            SELECT
+                GUIDE_PHOTO as guidePhoto,
+                GUIDE_NAME as guideName,
+                GUIDE_ID as guideId
+            FROM
+                o2o_v_guide_info
+            WHERE
+                guide_id in (:staffIdList)
+        ]]>
+    </sql>
+
+    <sql id="checkClerkInfo">
+        <![CDATA[
+        select
+           GUIDE_ID as guideId,
+           GUIDE_PHOTO as guidePhoto,
+           INTRODUCTION as introduction,
+           OPEN_FLAG as openFlag,
+           business_type as storeType,
+           SALE_AGE as saleAge
+        from o2o_v_guide_info
+        where GUIDE_ID =:guideId
+        ]]>
+    </sql>
+
+    <sql id="updatebDimissionFlag">
+        <![CDATA[
+            UPDATE
+                o2ob_v_guide_info
+            SET
+               DIMISSION_FLAG = '1'
+            WHERE
+                GUIDE_ID in (:staffList)
+        ]]>
+    </sql>
+
+    <!--导购表查询orderNum-->
+    <sql id="queryOrderNum">
+        <![CDATA[
+            select
+                ORDER_NUM
+                from o2o_v_guide_info
+            WHERE
+                GUIDE_ID =:guideId
+        ]]>
+    </sql>
+
+    <!--查询最近时间的预约信息-->
+    <sql id="queryNearBookingInfo">
+        <![CDATA[
+            select
+                BOOKCODE bookCode,
+                BOOKING_TIME bookingTime,
+                CREATE_TIME  bookingCreateTime
+                from o2o_v_guide_appointment
+            WHERE
+                GUIDE_ID =:guideId
+                and CUST=:customerNum
+                and COMPLETE='3'
+                and date_format(BOOKING_TIME,'%Y-%m-%d')>=:today
+                order by BOOKING_TIME ASC
+                limit 1
+        ]]>
+    </sql>
+
+    <!--查询当天预约的导购工号-->
+    <sql id="queryBookingGuideId">
+        <![CDATA[
+            select
+                GUIDE_ID
+                from o2o_v_guide_appointment
+            where
+                (date_format(BOOKING_TIME,'%Y-%m-%d') = :bookTime  or  date_format(CREATE_TIME,'%Y-%m-%d')  = :today)
+            and CUST=:customerNum and COMPLETE!=5 and BOOKING_STATUS='0';
+        ]]>
+    </sql>
+
+
+    <!--查询预约弹窗语-->
+    <sql id="queryBookingDialogue">
+        <![CDATA[
+            select
+                a.BOOKCODE bookCode,
+                a.BOOKING_TIME bookTime,
+                b.NAME storeName,
+                b.SHORT_NAME  shortName,
+                c.GUIDE_NAME  guideName
+                from o2o_v_guide_appointment a,o2o_store_detail b,o2o_v_guide_info c
+            WHERE
+                    a.GUIDE_ID=c.GUIDE_ID
+                and a.STORE_CODE=b.STORE_CODE
+                and b.STORE_CODE=c.STORE_CODE
+                and a.GUIDE_ID=:guideId
+                and b.STORE_STATUS='1' and c.OPEN_FLAG='1'
+                and (date_format(a.BOOKING_TIME,'%Y-%m-%d') = :bookingTime  or  date_format(a.CREATE_TIME,'%Y-%m-%d')  = :today)
+            and a.CUST=:customerNum and a.COMPLETE!=5 and BOOKING_STATUS='0';
+
+        ]]>
+    </sql>
+
+    <sql id="queryBusinessType">
+        select
+        business_type as businessType
+        from o2o_v_guide_info
+        where STORE_CODE =:storeCode
+        limit 1
+    </sql>
+
+    <!--批量查询预约数量-->
+    <sql id="queryBatchGuideBookingCount">
+        select K.GUIDE_ID,count(m.id) as num from (select g.GUIDE_ID from o2o_v_guide_info g where g.GUIDE_ID IN (:guideIds)) k
+        LEFT JOIN o2o_v_guide_appointment m
+        ON m.guide_id=k.guide_id GROUP BY k.guide_id ORDER BY k.GUIDE_ID
+    </sql>
+
+    <!--批量查询接单数-->
+    <sql id="queryBatchOrderNumber">
+        select
+        GUIDE_ID guideId,ORDER_NUM orderNum
+        from
+        o2o_v_guide_info
+        WHERE
+        guide_id in(:guideIds) ORDER BY GUIDE_ID
+    </sql>
+
+    <!-- 根据导购工号查询导购信息 -->
+    <sql id="queryGuideInfoByGuideId">
+        <![CDATA[
+            SELECT
+                a.guide_id AS guideId,
+                a.guide_name AS guideName,
+                a.guide_photo AS guidePhoto,
+                a.star_level AS starLevel,
+                a.introduction AS introduction,
+                a.category_name AS categoryName,
+                a.tele AS tele,
+                a.order_num AS orderNum,
+                a.store_code AS storeCode,
+                a.certificate AS certificate,
+                a.sale_age saleAge,
+                a.business_type as businessType,
+                a.OPEN_FLAG as openFlag,
+                a.grade as starGrade,
+                a.outlet_code as outletCode,
+                a.dimission_flag as dimissionFlag,
+                b.name as storeName,
+                b.short_name as storeShortName,
+                b.address as storeAddress
+            FROM
+                o2o_v_guide_info a
+            inner join o2o_store_detail b on a.store_code = b.store_code
+            WHERE
+                guide_id = :guideId
+                and open_flag = '1' and delete_flag = 0 and is_Vgo = 1 and dimission_flag = '0'
+        ]]>
+    </sql>
+
+    <!-- 根据导购工号批量查询导购信息 -->
+    <sql id="batchQueryGuideInfo">
+        <![CDATA[
+            SELECT
+                GUIDE_ID AS guideId,
+                STORE_CODE AS storeCode,
+                BUSINESS_TYPE AS businessType
+            FROM
+                o2o_v_guide_info
+            WHERE
+                guide_id in (:guideIdList)
+                AND dimission_flag = '1'
+        ]]>
+    </sql>
+
+</sqlMap>

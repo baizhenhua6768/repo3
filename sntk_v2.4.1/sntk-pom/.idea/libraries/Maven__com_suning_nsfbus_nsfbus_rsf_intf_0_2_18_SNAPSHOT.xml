@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.suning.nsfbus:nsfbus-rsf-intf:0.2.18-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/nsfbus/nsfbus-rsf-intf/0.2.18-SNAPSHOT/nsfbus-rsf-intf-0.2.18-20180518.071351-5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/nsfbus/nsfbus-rsf-intf/0.2.18-SNAPSHOT/nsfbus-rsf-intf-0.2.18-20180518.071351-5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/nsfbus/nsfbus-rsf-intf/0.2.18-SNAPSHOT/nsfbus-rsf-intf-0.2.18-20180518.071351-5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

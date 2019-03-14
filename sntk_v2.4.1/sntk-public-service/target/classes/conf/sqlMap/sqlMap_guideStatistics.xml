@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="guideStatistics">
+    <sql id="addGuideStatistics">
+        <![CDATA[
+		    INSERT INTO O2O_V_GUIDE_STATISTICS (
+		         BOOKCODE,
+		         COMMODITY_CODE,
+		         CHANNEL,
+		         RESOURCE_TYPE,
+		         CREATE_TIME
+		    )
+		    VALUES(
+		         :dto.bookCode,
+		         :dto.commodityCode,
+		         :dto.channel,
+		         :dto.resourceType,
+		         :dto.createTime
+		    )
+	    ]]>
+    </sql>
+
+</sqlMap>

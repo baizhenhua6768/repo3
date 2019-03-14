@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="uploadFile" jdbcTimeout="5">
+    <sql id="queryProcessedFile">
+        <![CDATA[
+        select f.id as id,
+               f.file_name as fileName,
+               f.file_type as fileType,
+               f.status,
+               f.download_url as downloadUrl,
+               f.object_id as objectId,
+               f.size,
+               f.create_user as createUser,
+               f.create_time as createTime,
+               f.update_user as updateUser
+        from import_file f
+        where f.status = 0
+        ]]>
+    </sql>
+</sqlMap>

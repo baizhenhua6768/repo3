@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.suning.mzss:mzss-rsf-intf:1.8.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/mzss/mzss-rsf-intf/1.8.2-SNAPSHOT/mzss-rsf-intf-1.8.2-20181101.083753-1197.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/mzss/mzss-rsf-intf/1.8.2-SNAPSHOT/mzss-rsf-intf-1.8.2-20181101.083753-1197-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/suning/mzss/mzss-rsf-intf/1.8.2-SNAPSHOT/mzss-rsf-intf-1.8.2-20181101.083753-1197-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

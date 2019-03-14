@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="o2o_guide_info" jdbcTimeout="5">
+    <!-- 根据导购工号查询记录id -->
+    <sql id="selectIdByGuideId">
+        <![CDATA[
+            SELECT
+                ID
+            FROM
+                o2o_v_guide_info
+            WHERE
+                GUIDE_ID = :guideId
+        ]]>
+    </sql>
+
+    <!-- 批量查询中台V购信息 -->
+    <sql id="queryGuideInfoList">
+        <![CDATA[
+            SELECT
+                ID AS id,
+                GUIDE_ID AS guideId
+            FROM
+                o2o_v_guide_info
+            WHERE
+                GUIDE_ID in (:guideIds)
+        ]]>
+    </sql>
+
+    <sql id="deleteByStaffId">
+        <![CDATA[
+            update o2o_staff_cust_rel SET delete_flag ='1',delete_time=NOW() where staff_id=:staffId
+        ]]>
+    </sql>
+
+    <sql id="selectRel">
+        <![CDATA[
+            SELECT
+                cust_no
+            FROM
+                o2o_staff_cust_rel
+            WHERE
+                staff_id=:staffId
+        ]]>
+    </sql>
+</sqlMap>
