@@ -1,0 +1,27 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.myspringboot.application.dto.Cat",
+      "name": "person",
+      "type": "com.myspringboot.application.dto.Cat"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.myspringboot.application.dto.Cat",
+      "name": "person.addr",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.myspringboot.application.dto.Cat",
+      "name": "person.age",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.myspringboot.application.dto.Cat",
+      "name": "person.name",
+      "type": "java.lang.String"
+    }
+  ]
+}
